@@ -1,14 +1,14 @@
 User, Product, Category, Comment, Like, Image<br>
 <br>
 User:<br>
-x 회원가입: signUp<br>
-x 로그인: login<br>
+o 회원가입: signUp<br>
+o 로그인: login<br>
 x 회원탈퇴: deleteUser<br>
 <br>
 Product<br>
-x 상품 생성: createProduct <br>
-x 상품 업데이트: updateProduct <br>
-x 상품 삭제: deleteProduct <br>
+o 상품 생성: createProduct <br>
+o 상품 업데이트: updateProduct <br>
+o 상품 삭제: deleteProduct <br>
 x 상품 검색: searchProduct <br>
 <br>
 Comment<br>
