@@ -63,6 +63,13 @@ public class UserRepository {
 
     }
 
+    public User findById (Long id) {
+        User user = em.createQuery("SELECT u FROM User u WHERE u.id = :id", User.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        return user;
+    }
+
     public User findByEmail (String email) {
         try {
             return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)

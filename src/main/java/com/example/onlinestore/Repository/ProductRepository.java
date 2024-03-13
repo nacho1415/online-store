@@ -54,7 +54,6 @@ public class ProductRepository {
             if (id == null) {
                 throw new IllegalArgumentException("상품 아이디가 null입니다");
             }
-
             Product product = em.createQuery("SELECT p FROM Product p WHERE p.Id = :id", Product.class)
                     .setParameter("id", id)
                     .getSingleResult();

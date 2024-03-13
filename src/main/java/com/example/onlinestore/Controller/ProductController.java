@@ -31,7 +31,7 @@ public class ProductController {
             Product product = productService.createProduct(user, createProductDto);
             return ResponseEntity.ok(product);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Signup failed: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("createProduct failed: " + ex.getMessage());
         }
     }
 
@@ -42,7 +42,7 @@ public class ProductController {
             productService.updateProduct(updateProductDto);
             return ResponseEntity.ok("success");
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Signup failed: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("updateProduct failed: " + ex.getMessage());
         }
     }
 
