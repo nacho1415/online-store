@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    .board {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .box {
+        margin-top: 100px;
+        width: 500px;
+        height: 500px;
+    }
+    .mainBox {
+        width: 100%;
+        height: 300px;
+    }
+
+    .commentBox {
+        width: 500px;
+    }
+    .topMainBox {
+        width: 100%;
+        height: 170px;
+        display: flex;
+    }
+    .bottomMainBox {
+        width: 100%;
+        height: 130px;
+        border: 1px solid black;
+    }
+    .imageBox {
+        width: 170px;
+        height: 100%;
+        border: 1px solid black;
+    }
+
+    .productNamebox {
+        width: 330px;
+        height: 40px;
+        border: 1px solid black;
+        display:flex;
+        align-items:center;
+        justify-content: center;
+    }
+    .productDetailBox {
+        width: 330px;
+        height: 130px;
+        border: 1px solid black;
+    }
+
+    .DetailBoxLeft, DetailBoxRight {
+        width: 165px;
+        height: 130px;
+        border: 1px solid black;
+    }
+    .inputBox {
+        width: 500px;
+        height: 140px;
+        border: 1px solid black;
+    }
+
+    .commentInput {
+        width: 493px;
+        height: 100px;
+    }
+    .commentInputButton {
+        margin-top: 7px;
+        float: right;
+    }
+    .comment {
+
+        width: 500px;
+        height: 130px;
+        border: 1px solid black;
+        margin-top: 30px;
+    }
+    .commenterBox {
+        width: 500xp;
+        height : 30px;
+        border: 1px solid black;
+    }
+    .commentTextBox {
+        height: 100px;
+        display: flex;
+        align-items: center;
+    }
+    .clickable-text {
+        font-size: 13px;
+        color: blue;
+        cursor: pointer; /* 커서 모양을 손가락으로 변경하여 클릭 가능한 상태로 표시 */
+        text-decoration: underline; /* 밑줄 효과 추가 */
+    }
+    .like-btn {
+        cursor: pointer;
+    }
+</style>
+<body>
+    <div class="board">
+        <div class="box">
+            <div class="mainBox">
+                <div class="topMainBox">
+                    <div class="imageBox"></div>
+                    <div class="productInfoBox">
+                        <div class="productNamebox" th:text="${product.name}">
+                            상품 이름
+                        </div>
+                        <div class="productDetailBox">
+                            <div>가격: <span th:text="${product.price}"></span></div>
+                            <div>수량: <span th:text="${product.quantity}"></span></div>
+                            <div class="like-btn">
+                                <i class="far fa-heart"></i> <!-- 좋아요를 표시하는 아이콘 -->
+                                <span th:text="${product.likeCount}" class="like-count"></span> <!-- 좋아요 횟수를 표시하는 영역 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:text="${product.description}" class="bottomMainBox">
+                    상품 설명
+                </div>
+            </div>
+            <div class="commentBox">
+                <div class="inputBox">
+                    <input class="commentInput" placeholder="댓글을 써보세요 대댓글도 가능합니다">
+                    <input type="button" class="commentInputButton" value="댓글 쓰기" onclick="createThisComment()">
+                </div>
+                <div th:id="${comment.id}" class="comment" th:each="comment : ${product.comments}">
+                    <div th:text="${comment.user.nickname}" class="commenterBox">작성자 이름</div>
+                    <div th:text="${comment.context}" class="commentTextBox">댓글 내용</div>
+                    <div class="clickable-text" onclick="deleteComment(this)">삭제하기</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+
+    var likebutton = document.querySelector(".like-btn");
+    likebutton.addEventListener("click", toggleLike);
+    // 좋아요 기능 구현
+
+    function toggleLike () {
+        var xhr = new XMLHttpRequest();
+        var url = "/like/likeCheck"; // 요청할 URL
+        var token = localStorage.getItem('token');
+        var currentUrl = window.location.pathname;
+        var productId = currentUrl.split("/")[2]
+        var data = {
+            productId : productId
+        }
+        var jsonData = JSON.stringify(data);
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", token);
+        xhr.onreadystatechange = async function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var xhr1 = new XMLHttpRequest();
+                    var url1 = "/like/addLike"; // 요청할 URL
+                    xhr1.open("POST", url1, true);
+                    xhr1.setRequestHeader("Content-Type", "application/json");
+                    xhr1.setRequestHeader("Authorization", token);
+                    xhr1.onreadystatechange = async function () {
+                        if (xhr1.readyState === 4) {
+                            if (xhr1.status === 200) {
+                                console.log("좋아요하기까지 성공")
+                                location.reload(); // 성공 시 새로고침
+                            }
+                        }
+                    }
+                    xhr1.send(jsonData);
+                } else {
+                    var xhr2 = new XMLHttpRequest();
+                    var url2 = "/like/cancelLike"; // 요청할 URL
+                    xhr2.open("POST", url2, true);
+                    xhr2.setRequestHeader("Content-Type", "application/json");
+                    xhr2.setRequestHeader("Authorization", token);
+                    xhr2.onreadystatechange = async function () {
+                        if (xhr2.readyState === 4) {
+                            if (xhr2.status === 200) {
+                                console.log("좋아요 취소도 성공")
+                                location.reload(); // 성공 시 새로고침
+                            }
+                        }
+                    }
+                    xhr2.send(jsonData);
+                }
+            }
+        };
+        xhr.send(jsonData);
+    }
+
+    // 댓글 삭제하기 로직
+    var commentElement = document.querySelectorAll(".comment");
+    console.log(commentElement);
+    commentElement.forEach(function(element) {
+        var nicknameTag = element.querySelector(".commenterBox");
+        text = nicknameTag.innerText;
+        console.log(text);
+        if(text != localStorage.getItem('nickname')) {
+            deleteElement = element.querySelector(".clickable-text")
+            deleteElement.style.display = 'none';
+        }
+    })
+
+
+
+
+    function createThisComment() {
+
+
+        // 현재 URL 가져오기
+        var currentUrl = window.location.pathname;
+        var productId = currentUrl.split("/")[2]
+        var context = document.querySelector(".commentInput").value
+        // 가져온 파라미터 값 사용 예시
+        data = {
+            product : productId,
+            context: context
+        }
+        console.log(data, "data 확인")
+        var jsonData = JSON.stringify(data);
+        // AJAX 요청을 보냅니다.
+        var xhr = new XMLHttpRequest();
+        var url = "/comment/createComment"; // 요청할 URL
+        var token = localStorage.getItem('token');
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", token);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                location.reload();
+            }
+        };
+        xhr.send(jsonData); // 요청 보내기
+    }
+
+    function deleteComment(element) {
+        // 클릭된 요소의 부모 요소인 comment의 id 속성 값을 가져옵니다.
+        var commentId = element.parentNode.id
+        console.log(commentId);
+        // 폼 데이터를 객체로 생성합니다.
+        var data = {
+            commentId: commentId
+        };
+
+        // JSON 문자열로 변환합니다.
+        var jsonData = JSON.stringify(data);
+
+        // AJAX 요청을 보냅니다.
+        var xhr = new XMLHttpRequest();
+        var url = "/comment/deleteComment"; // 요청할 URL
+        var token = localStorage.getItem('token')
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", token);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // 요청이 성공하면 해당 댓글을 삭제합니다.
+                var commentElement = document.getElementById(commentId);
+                location.reload();
+            }
+        };
+        xhr.send(jsonData); // 요청 보내기
+    }
+   //dsadsad
+
+
+
+</script>
+</html>
+

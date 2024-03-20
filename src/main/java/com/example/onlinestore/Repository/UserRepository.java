@@ -95,6 +95,7 @@ public class UserRepository {
             throw new IllegalArgumentException("email is valid");
         }
 
+
         if (signUpDto.getPassword().length() <= 0 || !isValidPassword(signUpDto.getPassword())) {
             throw new IllegalArgumentException("password is valid");
         }

@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -35,6 +37,10 @@ public class ProductService {
 //        }
 //    }
 
+    public Product findProduct (Long id) {
+        return productRepository.findProduct(id);
+    }
+
     @Transactional
     public Product createProduct (User user, CreateProductDto createProductDto) throws Exception {
         try {
@@ -53,6 +59,9 @@ public class ProductService {
         }
     }
 
+    public List<Product> findAllProduct () {
+        return productRepository.findAllProduct();
+    }
 
     @Transactional
     public void updateProduct (UpdateProductDto updateProductDto) throws Exception {

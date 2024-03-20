@@ -24,6 +24,8 @@ public class Product {
 
     private Integer quantity;
 
+    private Integer likeCount = 0;
+
     @ManyToOne
     private User user;
 

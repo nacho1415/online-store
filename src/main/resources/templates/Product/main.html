@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .board {
+            display: flex;
+            justify-content: center; /* 수평 가운데 정렬 */
+            align-items: center; /* 수직 가운데 정렬 */
+        }
+
+        .box {
+            width: 600px;
+            height: 500px;
+        }
+
+        .userInfoBox {
+            width: 100%;
+            height: 130px;
+            display: flex;
+            flex-direction: column; /* 세로로 정렬 */
+            justify-content: center; /* 수직 가운데 정렬 */
+            align-items: center; /* 수평 가운데 정렬 */
+            margin-bottom: 20px;
+            border: 1px solid black;
+        }
+
+        .loginBox {
+            width: 100%;
+            height: 130px;
+            display: flex;
+            flex-direction: column; /* 세로로 정렬 */
+            justify-content: center; /* 수직 가운데 정렬 */
+            align-items: center; /* 수평 가운데 정렬 */
+            margin-bottom: 20px;
+        }
+        .loginBox input[type="email"],
+        .loginBox input[type="password"],
+        .loginBox input[type="submit"] {
+            width: 350px;
+            height: 45px;
+            display: block;
+            margin-bottom: 8px; /* 입력 요소 사이의 간격 */
+            padding: 5px; /* 버튼과 동일한 padding 추가 */
+            box-sizing: border-box; /* padding과 border를 요소의 크기에 포함 */
+        }
+
+
+        .postBox {
+            width: 600px;
+            height: 400px;
+        }
+
+        .post {
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            width: 100%;
+            height: 50px;
+            border: 1px solid black;
+        }
+
+        .createButtonBox {
+            width: 100%;
+            height: 30px;
+        }
+        ul {
+            padding: 0; /* li의 들여쓰기 제거 */
+            list-style-type: none; /* 목록 기호 제거 */
+        }
+
+        .title {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            border: 1px solid black;
+            padding-left: 10px; /* 좌측 여백 추가 */
+        }
+
+        .price {
+            width: 20%;
+            height: 100%;
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            justify-content: center;
+            border: 1px solid black;
+        }
+
+        .comment, .like, .quantity {
+            width: 10%;
+            height: 100%;
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            justify-content: center;
+            border: 1px solid black;
+        }
+<!--        .userBox {-->
+<!--            display: flex;-->
+<!--            justify-content: center; /* 수평 가운데 정렬 */-->
+<!--            align-items: center; /* 수직 가운데 정렬 */-->
+<!--        }-->
+
+        .authBox {
+            display: flex;
+            height: 200px;
+        }
+
+        .signupBox {
+            margin-left: 20px;
+            width: 300px;
+            height: 120px;
+            border: 1px solid black;
+        }
+        .signupBox input[type="email"],
+        .signupBox input[type="password"],
+        .signupBox input[type="submit"],
+         .signupBox input[type="text"]{
+            width: 350px;
+            height: 35px;
+            display: block;
+            margin-bottom: 8px; /* 입력 요소 사이의 간격 */
+            padding: 5px; /* 버튼과 동일한 padding 추가 */
+            box-sizing: border-box; /* padding과 border를 요소의 크기에 포함 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="board">
+    <div class="box">
+        <form >
+        <div class ="userBox">
+            <div class ="authBox">
+                <div class="loginBox">
+                <!-- 로그인 폼 -->
+                    <input type="email" id="email" name="email" placeholder="Email">
+                    <input type="password" id="password" name="password" placeholder="Password">
+                    <input type="submit" value="Login" onclick="submitForm(event)">
+                </div>
+                <div>
+                    <div class="signupBox">
+                        <input type="email" id="signUpEmail" name="signUpEmail" placeholder="Email">
+                        <input type="Password" id="signUpPassword" name="signUpPassword" placeholder="Password">
+                        <input type="text" id="signUpNickname" name="signUpNickname" placeholder="Nickname">
+                        <input type="submit" value="signUp" onclick="signUpForm(event)">
+                    </div>
+                </div>
+            </div>
+            <div class="userInfoBox">
+                <div id="nickname" class="nickname"></div>
+                <input type="submit" value="logout" onclick="logout()">
+            </div>
+        </div>
+        </form>
+        <div class="createButtonBox">
+            <a href="/product/createProduct" class="button" style="float: right; display: inline-block; border: 1px solid black; padding : 4px 6px; text-decoration: none; margin-bottom: 15px;">create</a>
+        </div>
+        <ul class="postBox">
+            <li class="post">
+                <div class="title">상품</div>
+                <div class="price">가격</div>
+                <div class="quantity">수량</div>
+                <div class="comment">댓글</div>
+                <div class="like">좋아요</div>
+            </li>
+            <li class="post" th:each="product : ${products}">
+                <div class="title">
+                    <a th:href="@{'/product/' + ${product.id}}">
+                        <span th:text="${product.name}"></span>
+                    </a>
+                </div>
+                <div class="price" th:text="${product.price}"></div>
+                <div class="quantity" th:text="${product.quantity}"></div>
+                <div class="comment" th:text="${product.comments.size()}"></div>
+                <div class="like" th:text="${product.likes.size()}"></div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+<script>
+
+</script>
+<script th:inline="javascript">
+
+    function signUpForm(event) {
+        event.preventDefault();
+        var email = document.getElementById("signUpEmail").value; // 이메일 입력값 가져오기
+        var password = document.getElementById("signUpPassword").value; // 비밀번호 입력값 가져오기
+        var nickname = document.getElementById("signUpNickname").value; // 닉네임 입력값 가져오기
+
+        var data = { // 폼 데이터 객체 생성
+            email: email,
+            password: password,
+            nickname: nickname
+        };
+        var jsonData = JSON.stringify(data); // JSON 문자열로 변환
+
+        // AJAX 요청 보내기
+        var xhr = new XMLHttpRequest(); // XMLHttpRequest 객체 생성
+        var url = "/user/signup"; // 요청할 URL
+        xhr.open("POST", url, true); // POST 방식으로 요청 설정
+        xhr.setRequestHeader("Content-Type", "application/json"); // 요청 헤더 설정
+        xhr.onreadystatechange = async function () { // 요청 상태 변화 이벤트 핸들러
+            if (xhr.readyState === 4) { // 요청 완료 및 성공 시
+                if(xhr.status === 200) {
+                    console.log("성공하긴 한건가")
+                    var xhr1 = new XMLHttpRequest(); // XMLHttpRequest 객체 생성
+                    var url1 = "/user/login"; // 요청할 URL
+                    xhr1.open("POST", url1, true); // POST 방식으로 요청 설정
+                    xhr1.setRequestHeader("Content-Type", "application/json"); // 요청 헤더 설정
+                    xhr1.onreadystatechange = async function () { // 요청 상태 변화 이벤트 핸들러
+                        if (xhr1.readyState === 4) { // 요청 완료 및 성공 시
+                            if(xhr1.status === 200) {
+                                console.log("이거 성공했을텐데?")
+                                var responseData = JSON.parse(xhr1.responseText); // 응답 데이터 파싱
+                                localStorage.setItem("token", responseData.token);
+                                localStorage.setItem("nickname", responseData.user.nickname)
+                                localStorage.setItem("userId", responseData.user.id)
+                                location.reload();
+                            }
+                        }
+                    };
+                    xhr1.send(jsonData); // 요청 보내기
+                }
+            }
+        };
+        xhr.send(jsonData); // 요청 보내기
+
+    }
+
+    function submitForm(event) {
+        event.preventDefault(); // 기본 동작(폼 제출) 방지
+
+        var email = document.getElementById("email").value; // 이메일 입력값 가져오기
+        var password = document.getElementById("password").value; // 비밀번호 입력값 가져오기
+
+        var data = { // 폼 데이터 객체 생성
+            email: email,
+            password: password
+        };
+        var jsonData = JSON.stringify(data); // JSON 문자열로 변환
+
+        // AJAX 요청 보내기
+        var xhr = new XMLHttpRequest(); // XMLHttpRequest 객체 생성
+        var url = "/user/login"; // 요청할 URL
+        xhr.open("POST", url, true); // POST 방식으로 요청 설정
+        xhr.setRequestHeader("Content-Type", "application/json"); // 요청 헤더 설정
+        xhr.onreadystatechange = function () { // 요청 상태 변화 이벤트 핸들러
+            if (xhr.readyState === 4 && xhr.status === 200) { // 요청 완료 및 성공 시
+                var responseData = JSON.parse(xhr.responseText); // 응답 데이터 파싱
+                localStorage.setItem("token", responseData.token);
+                localStorage.setItem("nickname", responseData.user.nickname)
+                localStorage.setItem("userId", responseData.user.id)
+                location.reload();
+            }
+        };
+        xhr.send(jsonData); // 요청 보내기
+    }
+
+    function logout () {
+        localStorage.removeItem("token");
+        localStorage.removeItem("nickname");
+        location.reload();
+    }
+
+    var InfoBox = document.querySelector('.userInfoBox')
+    var loginBox = document.querySelector('.loginBox')
+    var authBox = document.querySelector('.authBox')
+    var createButtonBox = document.querySelector('.createButtonBox')
+    if (localStorage.getItem('token')) {
+        InfoBox.style.display = 'flex';
+        authBox.style.display = 'none';
+        document.querySelector(".nickname").innerHTML = localStorage.getItem('nickname');
+        createButtonBox.style.display = 'block';
+    } else {
+        InfoBox.style.display = 'none';
+        authBox.style.display = 'flex';
+        createButtonBox.style.display = 'none';
+    }
+
+</script>
+</html>

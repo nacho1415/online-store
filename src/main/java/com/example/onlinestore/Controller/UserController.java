@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -20,11 +21,6 @@ public class UserController {
 
     @Autowired
     UserService userService;
-
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login () {
-//
-//    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup (@RequestBody SignUpDto signUpDto) {
@@ -39,16 +35,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login (@RequestBody LoginDto loginDto) {
-        try {
-            System.out.println("login 메서드 시작");
-//            System.out.println(userService.login(loginDto));
-            Map<String, Object> reponseData = userService.login(loginDto);
-//            System.out.println(user +"??");
-            return ResponseEntity.ok(reponseData);
-        } catch (Exception e) {
-            System.out.println("컨트롤러실패");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Signup failed: " + e.getMessage());
-        }
+    public ResponseEntity<?> login (@RequestBody LoginDto loginDto) throws Exception {
+        System.out.println("login Controller 확인" + loginDto);
+        Map<String, Object> data = userService.login(loginDto);
+        return ResponseEntity.ok(data);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        // 예외 처리 후 클라이언트에게 오류 응답 반환
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
     }
 }

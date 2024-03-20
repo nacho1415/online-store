@@ -4,16 +4,29 @@ import com.example.onlinestore.DTO.Post.CreateProductDto;
 import com.example.onlinestore.DTO.Post.UpdateProductDto;
 import com.example.onlinestore.DTO.User.SignUpDto;
 import com.example.onlinestore.Domain.Product;
+import com.example.onlinestore.Domain.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public class ProductRepository {
 
     @PersistenceContext
     EntityManager em;
+
+    public Product findProduct (Long id) {
+        return em.createQuery("SELECT p FROM Product p WHERE p.id = :id", Product.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
+
+    public List<Product> findAllProduct () {
+        return em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+    }
 
     public void duplicateCheck (CreateProductDto createProductDto) {
         Long EmailDuplicateCount = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.name = : name", Long.class)

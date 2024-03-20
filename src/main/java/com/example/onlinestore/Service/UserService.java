@@ -70,7 +70,7 @@ public class UserService {
             System.out.println("여기까지도옴11111");
             User user = userRepository.findByEmail(loginDto.getEmail());
             if (user == null) {
-                throw new IllegalArgumentException("cannot find email");
+                throw new IllegalArgumentException("해당 email을 가진 User는 존재하지 않습니다");
             }
             System.out.println("여기까지도옴222222");
             Long userId = user.getId();
@@ -83,6 +83,7 @@ public class UserService {
             System.out.println("여기까지도옴55555");
             response.put("token", token);
             response.put("user", user);
+            response.put("userId", user.getId());
             System.out.println(response);
             return response;
         } catch (Exception e) {

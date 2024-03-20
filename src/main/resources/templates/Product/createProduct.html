@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .board {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* 높이를 사용하지 않은 경우 기본값은 내용에 따라 자동 조절됩니다. */
+        }
+
+        .box {
+            margin-top: 100px;
+            width: 400px; /* 상자의 너비를 조절 */
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column; /* 세로로 정렬 */
+            align-items: center; /* 수평 가운데 정렬 */
+            padding: 20px; /* 내부 여백 설정 */
+        }
+
+        input {
+            width: 100%; /* 입력 상자가 상자의 너비를 채우도록 설정 */
+            margin-top: 10px; /* 입력 상자 간 간격 설정 */
+            box-sizing: border-box; /* 입력 상자의 너비에 padding과 border 포함 */
+            height: 60px; /* 입력 상자의 높이 조절 */
+
+        }
+    </style>
+</head>
+<body>
+<div class="board">
+    <div class="box">
+        <div> 상품 생성</div>
+        <input type="text" id="name" placeholder="상품 이름" required>
+        <input type="text" id="price" placeholder="상품 가격" required>
+        <input type="text" id="description" placeholder="상품 설명" required>
+        <input type="text" id="quantity" placeholder="상품 수량" required>
+        <input type="button" value="제출하기" onclick="createProduct()">
+    </div>
+</div>
+</body>
+
+<script>
+    function createProduct() { // 함수 정의 수정
+        event.preventDefault(); // 기본 동작(폼 제출) 방지
+
+        var name = document.getElementById("name").value; // 변수 이름 수정
+        var price = document.getElementById("price").value;
+        var description = document.getElementById("description").value;
+        var quantity = document.getElementById("quantity").value;
+
+        var data = { // 폼 데이터 객체 생성
+            name: name, // 변수 이름 수정
+            price: price,
+            description: description, // 변수 이름 수정
+            quantity: quantity
+        };
+        var jsonData = JSON.stringify(data); // JSON 문자열로 변환
+
+        // AJAX 요청 보내기
+        var xhr = new XMLHttpRequest(); // XMLHttpRequest 객체 생성
+        var url = "/product/createProduct"; // 요청할 URL
+        xhr.open("POST", url, true); // POST 방식으로 요청 설정
+        xhr.setRequestHeader("Content-Type", "application/json"); // 요청 헤더 설정
+        var token = localStorage.getItem('token')
+        xhr.setRequestHeader("Authorization", token);
+        xhr.onreadystatechange = function () { // 요청 상태 변화 이벤트 핸들러
+            if (xhr.readyState === 4 && xhr.status === 200) { // 요청 완료 및 성공 시
+                var responseData = JSON.parse(xhr.responseText); // 응답 데이터 파싱
+                location.href = "/";
+            }
+        };
+        xhr.send(jsonData); // 요청 보내기
+    }
+
+</script>
+</html>
+

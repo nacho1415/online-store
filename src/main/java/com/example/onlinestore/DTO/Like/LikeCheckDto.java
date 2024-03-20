@@ -3,6 +3,6 @@ package com.example.onlinestore.DTO.Like;
 import lombok.Data;
 
 @Data
-public class CancelLikeProductDto {
+public class LikeCheckDto {
     Long productId;
 }

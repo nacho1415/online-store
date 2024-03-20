@@ -2,6 +2,7 @@ package com.example.onlinestore.Repository;
 
 import com.example.onlinestore.Domain.Like;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +15,18 @@ public class LikeRepository {
     @PersistenceContext
     EntityManager em;
 
-    public void findLikeById (Long productId, Long userId) throws Exception {
-        List<Like> results = em.createQuery("SELECT l FROM Like l WHERE l.user.id = :userId AND l.product.id = :productId", Like.class)
-                .setParameter("userId", userId)
-                .setParameter("productId", productId)
-                .getResultList();
-        System.out.println("확인용33333333333" + results);
-        if (!results.isEmpty()) {
-            throw new Exception("이미 좋아요한 상품입니다");
+    public Like findLikeById (Long productId, Long userId) throws Exception {
+        Like like;
+        try {
+            like = em.createQuery("SELECT l FROM Like l WHERE l.user.id = :userId AND l.product.id = :productId", Like.class)
+                    .setParameter("userId", userId)
+                    .setParameter("productId", productId)
+                    .getSingleResult();
+            return like;
+        } catch (NoResultException ex) {
+            return like = null ;
+        } catch (Exception ex) {
+            throw new Exception("findLikeById를 하는 도중 오류 발생");
         }
     }
 

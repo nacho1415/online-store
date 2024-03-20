@@ -2,6 +2,7 @@ package com.example.onlinestore.Controller;
 
 import com.example.onlinestore.DTO.Like.AddLikeProductDto;
 import com.example.onlinestore.DTO.Like.CancelLikeProductDto;
+import com.example.onlinestore.DTO.Like.LikeCheckDto;
 import com.example.onlinestore.Domain.Like;
 import com.example.onlinestore.Domain.User;
 import com.example.onlinestore.JWT.JwtTokenProvider;
@@ -40,10 +41,21 @@ public class LikeController {
     public ResponseEntity<?> cancelLike (@RequestHeader("Authorization") String token, @RequestBody CancelLikeProductDto cancelLikeProductDto) {
         try {
             User user = jwtTokenProvider.validateToken(token);
-            likeService.cancelLikeProduct(user.getId(), cancelLikeProductDto.getLikeId());
+            likeService.cancelLikeProduct(user.getId(), cancelLikeProductDto.getProductId());
             return ResponseEntity.ok("success");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("cancelLike failed: " + ex.getMessage());
+        }
+    }
+
+    @PostMapping("/likeCheck")
+    public ResponseEntity<?> likeCheck (@RequestHeader("Authorization") String token, @RequestBody LikeCheckDto likeCheckDto) {
+        try {
+            User user = jwtTokenProvider.validateToken(token);
+            likeService.LikeCheck(user.getId(), likeCheckDto.getProductId());
+            return ResponseEntity.ok("success");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("likeCheck failed: " + ex.getMessage());
         }
     }
 }

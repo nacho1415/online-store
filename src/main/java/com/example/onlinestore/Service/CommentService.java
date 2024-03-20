@@ -25,6 +25,7 @@ public class CommentService {
     @Transactional
     public Comment createComment (CreateCommentDto createCommentDto, Long userId) {
         Comment comment = new Comment();
+        System.out.println("createComment" + createCommentDto);
         comment.setContext(createCommentDto.getContext());
         comment.setUser(userRepository.findById(userId));
         comment.setProduct(productRepository.findProductById(createCommentDto.getProduct()));

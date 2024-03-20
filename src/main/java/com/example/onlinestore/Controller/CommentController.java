@@ -33,6 +33,8 @@ public class CommentController {
     public ResponseEntity<?> createComment (@RequestHeader("Authorization") String token, @RequestBody CreateCommentDto createCommentDto) {
         try {
             User user = jwtTokenProvider.validateToken(token);
+            System.out.println("createComment 토큰의 user 반환 확인 = " + user);
+            System.out.println("createComment dto 확인 = " + createCommentDto);
             Comment comment = commentService.createComment(createCommentDto, user.getId());
 
             return ResponseEntity.ok(comment);
