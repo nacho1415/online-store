@@ -120,6 +120,9 @@
                                 <i class="far fa-heart"></i> <!-- 좋아요를 표시하는 아이콘 -->
                                 <span th:text="${product.likeCount}" class="like-count"></span> <!-- 좋아요 횟수를 표시하는 영역 -->
                             </div>
+                            <div>
+                                <button id="iamportPayment" type="button">구매하기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,6 +144,41 @@
         </div>
     </div>
 </body>
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<script>
+    //문서가 준비되면 제일 먼저 실행
+    $(document).ready(function(){
+        $("#iamportPayment").click(function(){
+            payment(); //버튼 클릭하면 호출
+        });
+    })
+
+
+    //버튼 클릭하면 실행
+    function payment(data) {
+        var now = new Date();
+        IMP.init('imp40845004');//아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
+        IMP.request_pay({
+            pg: "TC0ONETIME", //pg사명 or pg사명.CID (잘못 입력할 경우, 기본 PG사가 띄워짐)
+            pay_method: "card", //지불 방법
+            merchant_uid: "iamport_test_id" + now, //가맹점 주문번호 (아임포트를 사용하는 가맹점에서 중복되지 않은 임의의 문자열을 입력)
+            name: "도서", //결제창에 노출될 상품명
+            amount: 10, //금액
+<!--            buyer_email : "testiamport@naver.com",-->
+<!--            buyer_name : "홍길동1",-->
+<!--            buyer_tel : "01062077206"-->
+        }, function (rsp) { // callback
+            if (rsp.success) {
+                console.log(Object.getOwnPropertyNames(rsp));
+                alert("완료 -> imp_uid : "+rsp.imp_uid+" / merchant_uid(orderKey) : " +rsp.merchant_uid);
+            } else {
+                alert("실패 : 코드("+rsp.error_code+") / 메세지(" + rsp.error_msg + ")");
+            }
+        });
+    }
+
+</script>
 <script>
 
     var likebutton = document.querySelector(".like-btn");

@@ -1,4 +1,4 @@
-User, Product, Category, Comment, Like, Image<br>
+User, Product, Comment, Like, Order, Image<br>
 <br>
 User:<br>
 o 회원가입: signUp<br>

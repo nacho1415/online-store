@@ -21,8 +21,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+#import
+imp:
+  api:
+    key: 1214568003855217
+    secretkey: FjppssOC9xMlthflfab4e7tgk4Zz5oC48uF8jslkqRifVi2WNkPnxqTRm8djxhwhNpaZCrIBn4uBO6MO
